@@ -71,7 +71,7 @@ export default function Workspace() {
       const token = localStorage.getItem("token");
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/conversations/message",
+        `${import.meta.env.VITE_API_URL}/api/conversations/message`,
         {
           conversationId: activeConversation?._id,
           content: userMessage.content,
