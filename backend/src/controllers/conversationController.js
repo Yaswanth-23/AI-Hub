@@ -1,18 +1,27 @@
 import Conversation from "../models/Conversation.js";
-import axios from "axios";
+import Groq from "groq-sdk";
 
+// Initialize Groq once
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
+
+// Create new conversation
 export const createConversation = async (req, res) => {
   try {
     const conversation = await Conversation.create({
       user: req.user._id,
+      messages: [],
     });
 
     res.status(201).json(conversation);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Failed to create conversation" });
   }
 };
 
+// Get all conversations for user
 export const getUserConversations = async (req, res) => {
   try {
     const conversations = await Conversation.find({
@@ -21,10 +30,12 @@ export const getUserConversations = async (req, res) => {
 
     res.json(conversations);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Failed to fetch conversations" });
   }
 };
 
+// Get single conversation
 export const getConversationById = async (req, res) => {
   try {
     const conversation = await Conversation.findOne({
@@ -38,10 +49,12 @@ export const getConversationById = async (req, res) => {
 
     res.json(conversation);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Error fetching conversation" });
   }
 };
 
+// Send message and get AI reply
 export const addMessage = async (req, res) => {
   try {
     const { conversationId, content } = req.body;
@@ -49,7 +62,7 @@ export const addMessage = async (req, res) => {
 
     let conversation;
 
-    // 1️⃣ If conversation exists, find it
+    // Find existing conversation
     if (conversationId) {
       conversation = await Conversation.findOne({
         _id: conversationId,
@@ -57,25 +70,30 @@ export const addMessage = async (req, res) => {
       });
     }
 
-    // 2️⃣ If not found, create new one
+    // Create new conversation if not found
     if (!conversation) {
       conversation = await Conversation.create({
         user: userId,
-        title: content.slice(0, 30), // Auto title
+        title: content.slice(0, 30),
         messages: [],
       });
     }
 
-    // 3️⃣ Add user message
+    // Add user message
     conversation.messages.push({
       role: "user",
       content,
     });
 
-   // 4️⃣ Temporary AI response (since Ollama can't run on Render)
-    const aiReply = `AI reply to: ${content}`;
+    // Get AI response from Groq
+    const completion = await groq.chat.completions.create({
+      model: "llama3-8b-8192",
+      messages: conversation.messages,
+    });
 
-    // 5️⃣ Add AI reply
+    const aiReply = completion.choices[0].message.content;
+
+    // Add AI response
     conversation.messages.push({
       role: "assistant",
       content: aiReply,
@@ -88,6 +106,7 @@ export const addMessage = async (req, res) => {
       messages: conversation.messages,
       title: conversation.title,
     });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
