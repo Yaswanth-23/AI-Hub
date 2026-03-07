@@ -8,20 +8,24 @@ import conversationRoutes from "./routes/conversationRoutes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🔥 FORCE LOAD ENV FROM BACKEND ROOT
-dotenv.config({
-  path: path.resolve(__dirname, "../.env"),
-});
+// ✅ Load .env only for local development
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({
+    path: path.resolve(__dirname, "../.env"),
+  });
+}
 
 import app from "./app.js";
 import connectDB from "./config/db.js";
 
-// ✅ Register User Routes
+// Register routes
 app.use("/api/user", userRoutes);
 app.use("/api/billing", billingRoutes);
 app.use("/api/conversations", conversationRoutes);
 
-console.log("Stripe Key After Fix:", process.env.STRIPE_SECRET_KEY);
+// Debug logs
+console.log("Stripe Key:", process.env.STRIPE_SECRET_KEY);
+console.log("Mongo URI:", process.env.MONGO_URI);
 
 const PORT = process.env.PORT || 5000;
 
