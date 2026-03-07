@@ -1,11 +1,6 @@
 import Conversation from "../models/Conversation.js";
 import Groq from "groq-sdk";
 
-// Initialize Groq once
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
-
 // Create new conversation
 export const createConversation = async (req, res) => {
   try {
@@ -85,10 +80,21 @@ export const addMessage = async (req, res) => {
       content,
     });
 
-    // Get AI response from Groq
+    // Initialize Groq
+    const groq = new Groq({
+      apiKey: process.env.GROQ_API_KEY,
+    });
+
+    // 🔹 Remove MongoDB fields like _id before sending to Groq
+    const cleanMessages = conversation.messages.map((msg) => ({
+      role: msg.role,
+      content: msg.content,
+    }));
+
+    // Send conversation to AI
     const completion = await groq.chat.completions.create({
       model: "llama3-8b-8192",
-      messages: conversation.messages,
+      messages: cleanMessages,
     });
 
     const aiReply = completion.choices[0].message.content;
@@ -108,7 +114,7 @@ export const addMessage = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("AI Error:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
