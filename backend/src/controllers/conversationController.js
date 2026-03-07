@@ -72,17 +72,8 @@ export const addMessage = async (req, res) => {
       content,
     });
 
-    // 4️⃣ Call Ollama (🔥 UPDATED MODEL)
-    const response = await axios.post(
-      "http://localhost:11434/api/generate",
-      {
-        model: "gemma3:1b",
-        prompt: content,
-        stream: false,
-      }
-    );
-
-    const aiReply = response.data.response;
+   // 4️⃣ Temporary AI response (since Ollama can't run on Render)
+    const aiReply = `AI reply to: ${content}`;
 
     // 5️⃣ Add AI reply
     conversation.messages.push({
