@@ -7,10 +7,14 @@ import conversationRoutes from "./routes/conversationRoutes.js";
 
 const app = express();
 
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173"
+    ],
+    credentials: true
+  })
+);
 
 // Stripe webhook needs raw body
 app.use("/api/billing/webhook", express.raw({ type: "application/json" }));
