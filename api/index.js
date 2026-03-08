@@ -8,34 +8,28 @@ async function ensureDBConnection() {
   if (!dbConnected) {
     await connectDB();
     dbConnected = true;
-    console.log("MongoDB connected");
   }
 }
 
 const server = serverless(app);
 
 export default async function handler(req, res) {
-  try {
-    // ✅ Handle CORS Preflight OPTIONS request (Very important for Vercel)
-    if (req.method === "OPTIONS") {
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-      res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-      return res.status(200).end();
-    }
+  const origin = req.headers.origin || "*";
 
-    // ✅ Ensure MongoDB connection
-    await ensureDBConnection();
+  // ⭐ Handle OPTIONS preflight (CRITICAL FOR VERCEL)
+  if (req.method === "OPTIONS") {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
 
-    // ✅ Pass request to Express server
-    return server(req, res);
-
-  } catch (error) {
-    console.error("Serverless Handler Error:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Internal Server Error"
-    });
+    return res.status(200).end();
   }
+
+  await ensureDBConnection();
+
+  res.setHeader("Access-Control-Allow-Origin", origin);
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  return server(req, res);
 }
