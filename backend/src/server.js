@@ -24,8 +24,5 @@ console.log("Stripe Key:", process.env.STRIPE_SECRET_KEY ? "Loaded" : "Missing")
 console.log("Mongodb URI:", process.env.MONGODB_URI ? "Loaded" : "Missing");
 console.log("Groq Key:", process.env.GROQ_API_KEY ? "Loaded" : "Missing");
 
-// Connect to MongoDB (Vercel will handle request lifecycle)
-await connectDB();
-
 // Export app for Vercel serverless
 export default app;
