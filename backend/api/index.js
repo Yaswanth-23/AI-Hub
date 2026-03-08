@@ -4,14 +4,18 @@ import connectDB from "../src/config/db.js";
 
 let isConnected = false;
 
-async function handler(req, res) {
+// Connect to database only once
+async function ensureDBConnection() {
   if (!isConnected) {
     await connectDB();
     isConnected = true;
     console.log("MongoDB connected");
   }
-
-  return serverless(app)(req, res);
 }
 
-export default handler;
+const server = serverless(app);
+
+export default async function handler(req, res) {
+  await ensureDBConnection();
+  return server(req, res);
+}
