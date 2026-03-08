@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:5000/api/auth";
+const API = `${import.meta.env.VITE_API_URL}/api/auth`;
 
 /* =========================
    🔐 REGISTER
@@ -16,7 +16,6 @@ export const registerUser = async (data) => {
 export const loginUser = async (data) => {
   const res = await axios.post(`${API}/login`, data);
 
-  // Save token locally (important for protected routes later)
   if (res.data.token) {
     localStorage.setItem("token", res.data.token);
   }
