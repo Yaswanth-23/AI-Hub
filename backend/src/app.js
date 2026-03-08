@@ -11,10 +11,11 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://ai-indol-kappa.vercel.app",
-      "https://ai-hub-blush-five.vercel.app",
+      "https://ai-indol-kappa.vercel.app"
     ],
-    credentials: true
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
