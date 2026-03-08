@@ -24,22 +24,8 @@ console.log("Stripe Key:", process.env.STRIPE_SECRET_KEY ? "Loaded" : "Missing")
 console.log("Mongodb URI:", process.env.MONGODB_URI ? "Loaded" : "Missing");
 console.log("Groq Key:", process.env.GROQ_API_KEY ? "Loaded" : "Missing");
 
-const PORT = process.env.PORT || 5000;
+// Connect to MongoDB (Vercel will handle request lifecycle)
+await connectDB();
 
-const startServer = async () => {
-  try {
-    // Connect to MongoDB
-    await connectDB();
-
-    // Start server
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
-
-  } catch (error) {
-    console.error("❌ Failed to start server:", error);
-    process.exit(1);
-  }
-};
-
-startServer();
+// Export app for Vercel serverless
+export default app;
