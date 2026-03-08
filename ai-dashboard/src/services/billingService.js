@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "../api/api.js";
 
 export const createCheckout = async (priceId) => {
   const { data } = await api.post("/billing/create-checkout", { priceId });

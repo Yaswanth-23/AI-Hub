@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "../api/api.js";
 
 export const getUserSettings = async () => {
   const response = await api.get("/user/settings");

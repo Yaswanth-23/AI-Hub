@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import api from "../api/api.js";
 
 export default function AdminPanel() {
   const [users, setUsers] = useState([]);

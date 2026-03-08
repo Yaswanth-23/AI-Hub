@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "../api/api.js";
 
 export const getConversations = async () => {
   const { data } = await api.get("/conversations");
