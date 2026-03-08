@@ -8,7 +8,6 @@ async function ensureDBConnection() {
   if (!dbConnected) {
     await connectDB();
     dbConnected = true;
-    console.log("✅ MongoDB connected");
   }
 }
 
@@ -18,7 +17,6 @@ export default async function handler(req, res) {
   try {
     const origin = req.headers.origin || "*";
 
-    // 🔹 Handle OPTIONS preflight for all routes
     if (req.method === "OPTIONS") {
       res.setHeader("Access-Control-Allow-Origin", origin);
       res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
@@ -27,19 +25,19 @@ export default async function handler(req, res) {
       return res.status(200).end();
     }
 
-    // 🔹 Ensure MongoDB connection
     await ensureDBConnection();
 
-    // 🔹 Set CORS headers for actual requests
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Credentials", "true");
 
-    // 🔹 Pass request to Express app
     return server(req, res);
 
   } catch (error) {
-    console.error("Serverless Handler Error:", error);
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    });
   }
 }
