@@ -7,25 +7,20 @@ import conversationRoutes from "./routes/conversationRoutes.js";
 
 const app = express();
 
-// ✅ CORS configuration (production safe)
-const corsOptions = {
+// ⚡ CORS for multiple frontends dynamically
+app.use(cors({
   origin: true,
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-};
+}));
+app.options("*", cors());
 
-// ✅ Apply CORS middleware
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
-
-// ✅ Stripe / webhook raw body (must be before json parser)
+// Stripe webhook needs raw body
 app.use("/api/billing/webhook", express.raw({ type: "application/json" }));
 
-// ✅ JSON body parser
+// JSON body parser
 app.use(express.json());
 
-// ✅ Routes
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/billing", billingRoutes);
 app.use("/api/admin", adminRoutes);
