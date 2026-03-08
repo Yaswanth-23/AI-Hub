@@ -15,6 +15,27 @@ async function ensureDBConnection() {
 const server = serverless(app);
 
 export default async function handler(req, res) {
-  await ensureDBConnection();
-  return server(req, res);
+  try {
+    // ✅ Handle CORS Preflight OPTIONS request (Very important for Vercel)
+    if (req.method === "OPTIONS") {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+      return res.status(200).end();
+    }
+
+    // ✅ Ensure MongoDB connection
+    await ensureDBConnection();
+
+    // ✅ Pass request to Express server
+    return server(req, res);
+
+  } catch (error) {
+    console.error("Serverless Handler Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    });
+  }
 }
