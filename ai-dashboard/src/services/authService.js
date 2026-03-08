@@ -1,12 +1,10 @@
-import axios from "axios";
-
-const API = `${import.meta.env.VITE_API_URL}/api/auth`;
+import api from "../api/api";
 
 /* =========================
    🔐 REGISTER
 ========================= */
 export const registerUser = async (data) => {
-  const res = await axios.post(`${API}/register`, data);
+  const res = await api.post("/auth/register", data);
   return res.data;
 };
 
@@ -14,12 +12,7 @@ export const registerUser = async (data) => {
    🔐 LOGIN
 ========================= */
 export const loginUser = async (data) => {
-  const res = await axios.post(`${API}/login`, data);
-
-  if (res.data.token) {
-    localStorage.setItem("token", res.data.token);
-  }
-
+  const res = await api.post("/auth/login", data);
   return res.data;
 };
 
@@ -27,18 +20,7 @@ export const loginUser = async (data) => {
    👤 UPDATE PROFILE
 ========================= */
 export const updateProfile = async (data) => {
-  const token = localStorage.getItem("token");
-
-  const res = await axios.put(
-    `${API}/update-profile`,
-    data,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
+  const res = await api.put("/auth/update-profile", data);
   return res.data;
 };
 
@@ -46,17 +28,6 @@ export const updateProfile = async (data) => {
    🔑 CHANGE PASSWORD
 ========================= */
 export const changePassword = async (data) => {
-  const token = localStorage.getItem("token");
-
-  const res = await axios.put(
-    `${API}/change-password`,
-    data,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-
+  const res = await api.put("/auth/change-password", data);
   return res.data;
 };

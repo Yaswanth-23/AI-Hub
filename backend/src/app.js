@@ -7,17 +7,14 @@ import conversationRoutes from "./routes/conversationRoutes.js";
 
 const app = express();
 
-// ⚡ CORS for multiple frontends dynamically
-app.use(cors({
-  origin: true,
-  credentials: true,
-}));
+// 🔹 Enable CORS for all origins dynamically
+app.use(cors({ origin: true, credentials: true }));
 app.options("*", cors());
 
-// Stripe webhook needs raw body
+// Stripe webhook
 app.use("/api/billing/webhook", express.raw({ type: "application/json" }));
 
-// JSON body parser
+// JSON parser
 app.use(express.json());
 
 // Routes

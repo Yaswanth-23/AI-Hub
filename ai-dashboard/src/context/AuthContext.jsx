@@ -28,10 +28,12 @@ export function AuthProvider({ children }) {
   const login = async (formData) => {
     const data = await loginUser(formData);
 
+    if (!data) throw new Error("Login failed");
+
     // ✅ Ensure backend returns plan
     const safeUser = {
       ...data.user,
-      plan: data.user.plan || "free",
+      plan: data.user?.plan || "free",
     };
 
     localStorage.setItem("token", data.token);
