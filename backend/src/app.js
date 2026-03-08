@@ -9,7 +9,7 @@ const app = express();
 
 // ✅ CORS configuration (production safe)
 const corsOptions = {
-  origin: "*",
+  origin: true,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
