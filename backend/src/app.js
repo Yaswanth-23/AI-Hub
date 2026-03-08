@@ -9,7 +9,10 @@ const app = express();
 
 app.use(
   cors({
-    origin:"https://ai-indol-kappa.vercel.app",
+    origin: [
+      "https://ai-indol-kappa.vercel.app",
+      "http://localhost:5173"
+    ],
     credentials: true,
   })
 );
@@ -18,6 +21,11 @@ app.use(
 app.use("/api/billing/webhook", express.raw({ type: "application/json" }));
 
 app.use(express.json());
+
+// Health check route
+app.get("/api", (req, res) => {
+  res.json({ message: "API running 🚀" });
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/billing", billingRoutes);

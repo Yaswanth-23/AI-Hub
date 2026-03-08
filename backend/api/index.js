@@ -2,13 +2,12 @@ import serverless from "serverless-http";
 import app from "../src/app.js";
 import connectDB from "../src/config/db.js";
 
-let isConnected = false;
+let dbConnected = false;
 
-// Connect to database only once
 async function ensureDBConnection() {
-  if (!isConnected) {
+  if (!dbConnected) {
     await connectDB();
-    isConnected = true;
+    dbConnected = true;
     console.log("MongoDB connected");
   }
 }
