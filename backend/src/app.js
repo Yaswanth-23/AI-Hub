@@ -10,12 +10,14 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://ai-indol-kappa.vercel.app",
+      /\.vercel\.app$/,
       "http://localhost:5173"
     ],
     credentials: true,
   })
 );
+
+app.options("*", cors());
 
 // Stripe webhook needs raw body
 app.use("/api/billing/webhook", express.raw({ type: "application/json" }));
