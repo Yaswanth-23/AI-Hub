@@ -1,11 +1,17 @@
-import api from "../api/api.js";
+import api from "@api/api";
 
+/* =========================
+   ⚙️ GET USER SETTINGS
+========================= */
 export const getUserSettings = async () => {
-  const response = await api.get("/user/settings");
-  return response.data;
+  const { data } = await api.get("/user/settings");
+  return data;
 };
 
+/* =========================
+   ⚙️ UPDATE USER SETTINGS
+========================= */
 export const updateUserSettings = async (settings) => {
-  const response = await api.put("/user/settings", settings);
-  return response.data;
+  const { data } = await api.put("/user/settings", settings);
+  return data;
 };
