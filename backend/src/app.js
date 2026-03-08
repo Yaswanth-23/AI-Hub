@@ -7,27 +7,20 @@ import conversationRoutes from "./routes/conversationRoutes.js";
 
 const app = express();
 
-app.use(
-  cors({
-    origin: [
-      /\.vercel\.app$/,
-      "http://localhost:5173"
-    ],
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: true, // allow all origins (safe for API usage)
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+};
 
-app.options("*", cors());
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // handle preflight
 
 // Stripe webhook needs raw body
 app.use("/api/billing/webhook", express.raw({ type: "application/json" }));
 
 app.use(express.json());
-
-// Health check route
-app.get("/api", (req, res) => {
-  res.json({ message: "API running 🚀" });
-});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/billing", billingRoutes);
